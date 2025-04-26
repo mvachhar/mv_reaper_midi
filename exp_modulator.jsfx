@@ -15,7 +15,7 @@ slider11:0<0,127,11{0 Bank Sel M,1 Mod Wheel M,2 Breath M,3,4 Foot P M,5 Porta M
 slider19:20<0,100,0.1>Input Threshold %
 slider20:85<0,100,0.1>Saturation %
 
-slider50:0<0,1,0.001>Agressiveness
+slider50:0<-1,1,0.01>Agressiveness
 
 slider100:0<0,1,0.001>Input Value
 slider101:0<0,1,0.001>Output Value
