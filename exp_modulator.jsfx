@@ -42,8 +42,9 @@ function compute_new_toe_switch_state(value) (
   value == 127 ? ((toe_switch_state > 0) ? 0 : 1) : toe_switch_state 
 );
 
-function raw_curve(valIn) (
-    valIn;
+function raw_curve(x) (
+    k = slider50;
+    x*exp(-2 *k * x)/exp(-2 * k);
 );
 
 function curve(valIn) (
