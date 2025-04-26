@@ -151,16 +151,9 @@ function draw_curve(x_pos, y_pos, width, height) (
   gfx_circle(pos_x, pos_y, 5, 1, 1);
 );
 
-function draw_toe_area(x_pos, y_pos, width, height) (
+function draw_toe_status(x_pos, y_pos, width, height) (
   slider10 == 1 ? (
     gfx_set(0.2, 0.7, 0.2, 0.3);
-    
-    // Draw heel area (lower threshold)
-    toe_threshold = slider11;
-    gfx_rect(x_pos, y_pos + height * (1 - toe_threshold), width * toe_threshold, height * toe_threshold);
-    
-    // Draw toe area (upper threshold)
-    gfx_rect(x_pos + width * (1 - toe_threshold), y_pos, width * toe_threshold, height * toe_threshold);
     
     // Draw toe state indicator
     toe_switch_state ? (
@@ -188,13 +181,10 @@ height = gfx_h - 40;
 gfx_set(0.1, 0.1, 0.1, 1);
 gfx_rect(x_pos, y_pos, width, height);
 
-// Draw grid
 draw_grid(x_pos, y_pos, width, height);
 
-// Draw toe switch areas
-draw_toe_area(x_pos, y_pos, width, height);
+draw_toe_status(width-60, 20, 60, 20);
 
-// Draw curve
 draw_curve(x_pos, y_pos, width, height);
 
 // Draw title
