@@ -1,0 +1,203 @@
+desc:MIDI Expression Pedal Curve + Toe Switch Emulation
+//tags: utility processing MIDI
+//author: Manish Vachharajani
+//version: 1.0
+
+in_pin:none
+out_pin:none
+
+slider1:0<0,127,1>Input CC# (0-127)
+slider2:0<0,16,1>Input Channel (0=global)
+
+slider10:1<0,1,1{Off,On}>Enable Toe Switch Emulation
+slider11:0<0,127,1>Toe Switch CC# (0-127)
+
+slider19:20<0,100,0.1>Input Threshold %
+slider20:85<0,100,0.1>Saturation %
+
+slider50:0<0,1,0.001>Agressiveness
+
+slider100:0<0,1,0.001>Input Value
+slider101:0<0,1,0.001>Output Value
+
+@init
+// Variables with meaningful names
+toe_switch_state = 0;
+
+function should_process_message(midi_status, midi_data1) (
+  input_cc = slider1;
+  input_channel = slider2
+;
+  cc_number = midi_data1;
+  (midi_status & 0xF0) == 0xB0 && 
+  cc_number == input_cc &&
+  (
+    midi_status & 0x0F == input_channel ||
+    input_channel == 0
+  );
+);
+
+function compute_new_toe_switch_state(value) (
+  toe_switch_emulation = slider10;
+  value == 127 ? ((toe_switch_state > 0) ? 0 : 1) : toe_switch_state 
+);
+
+function raw_curve(valIn) (
+    valIn;
+);
+
+function curve(valIn) (
+    saturation = slider20 / 100;
+    threshold = slider19 / 100;
+    val = valIn;
+    (val < threshold) ? (
+        val = 0;
+    ):((val < saturation) ? (
+        range = saturation - threshold;
+        val = raw_curve((val - threshold) / range);
+    ) : (
+        val = 1;
+    ));
+    val;
+);
+
+function compute_new_midivalue(value) (
+  input_value = value / 127;
+  slider100 = input_value;
+  
+  output_value = curve(input_value);
+  output_value = min(1, max(0, output_value));
+
+  slider101 = output_value;
+  output_value * 127;
+);
+
+@slider
+// Nothing needed here
+
+@block
+// Process all MIDI events in this block
+while (midirecv(offset, midi_status, midi_data1, midi_data2)) (
+  toe_switch_cc_num = slider11;
+  new_toe_switch_state = old_toe_switch_state;
+  should_process_message(midi_status, midi_data1) ? (
+    new_toe_switch_state = compute_new_toe_switch_state(midi_data2);
+    new_data2 = compute_new_midivalue(midi_data2);
+    (toe_switch_state != new_toe_switch_state && toe_switch_emulation == 1) ? (
+      // Send toe switch message
+      midisend(offset, 0xB0 | (midi_status & 0x0F), toe_switch_cc_num, new_toe_switch_state * 127);
+      toe_switch_state = new_toe_switch_state;
+    );
+    // Send the processed CC message
+    midisend(offset, midi_status, midi_data1, new_data2);
+  ) : (
+    midisend(offset, midi_status, midi_data1, midi_data2);
+  );
+);
+
+@gfx 400 200
+function draw_grid(x_pos, y_pos, width, height) (
+  gfx_set(0.5, 0.5, 0.5, 1);
+  gfx_line(x_pos, y_pos + height*0.5, x_pos + width, y_pos + height*0.5); // Horizontal center line
+  gfx_line(x_pos + width*0.5, y_pos, x_pos + width*0.5, y_pos + height); // Vertical center line
+  
+  // Draw grid lines
+  gfx_set(0.3, 0.3, 0.3, 1);
+  grid_index = 0;
+  loop(5,
+    gfx_line(x_pos + width*0.25*grid_index, y_pos, x_pos + width*0.25*grid_index, y_pos + height);
+    gfx_line(x_pos, y_pos + height*0.25*grid_index, x_pos + width, y_pos + height*0.25*grid_index);
+    grid_index += 1;
+  );
+);
+
+function draw_curve(x_pos, y_pos, width, height) (
+  gfx_set(1, 1, 1, 1);
+  
+  point_index = 0;
+  prev_x = x_pos;
+  prev_y = y_pos + height;
+  
+  loop(100,
+    input_value = point_index / 100;
+    
+    output_value = curve(input_value);
+    // Clamp to valid range
+    output_value = min(1, max(0, output_value));
+    
+    curr_x = x_pos + input_value * width;
+    curr_y = y_pos + (1 - output_value) * height;
+    
+    point_index > 0 ? (
+      gfx_line(prev_x, prev_y, curr_x, curr_y);
+    );
+    
+    prev_x = curr_x;
+    prev_y = curr_y;
+    
+    point_index += 1;
+  );
+  
+  // Draw the current value point
+
+  input_value = slider100;
+  current_value = slider101;
+
+  pos_x = x_pos + input_value * width;
+  pos_y = y_pos + (1 - current_value) * height;
+  
+  gfx_set(1, 0.2, 0.2, 1);
+  gfx_circle(pos_x, pos_y, 5, 1, 1);
+);
+
+function draw_toe_area(x_pos, y_pos, width, height) (
+  slider10 == 1 ? (
+    gfx_set(0.2, 0.7, 0.2, 0.3);
+    
+    // Draw heel area (lower threshold)
+    toe_threshold = slider11;
+    gfx_rect(x_pos, y_pos + height * (1 - toe_threshold), width * toe_threshold, height * toe_threshold);
+    
+    // Draw toe area (upper threshold)
+    gfx_rect(x_pos + width * (1 - toe_threshold), y_pos, width * toe_threshold, height * toe_threshold);
+    
+    // Draw toe state indicator
+    toe_switch_state ? (
+      gfx_set(0, 1, 0, 1);
+      gfx_x = x_pos + width - 50;
+      gfx_y = y_pos + 10;
+      gfx_drawstr("TOE ON");
+    ) : (
+      gfx_set(1, 0, 0, 1);
+      gfx_x = x_pos + width - 55;
+      gfx_y = y_pos + 10;
+      gfx_drawstr("TOE OFF");
+    );
+  );
+);
+
+// Main drawing routine
+gfx_clear = 0x000000;
+x_pos = 20;
+y_pos = 20;
+width = gfx_w - 40;
+height = gfx_h - 40;
+
+// Background
+gfx_set(0.1, 0.1, 0.1, 1);
+gfx_rect(x_pos, y_pos, width, height);
+
+// Draw grid
+draw_grid(x_pos, y_pos, width, height);
+
+// Draw toe switch areas
+draw_toe_area(x_pos, y_pos, width, height);
+
+// Draw curve
+draw_curve(x_pos, y_pos, width, height);
+
+// Draw title
+gfx_set(1, 1, 1, 1);
+gfx_x = x_pos;
+gfx_y = y_pos - 15;
+gfx_drawstr("Expression Pedal Curve (input % vs. output %)");
