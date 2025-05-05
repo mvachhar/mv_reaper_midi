@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<index version="1" name="MV Midi Plugins">
+  <category name="MIDI">
+    <reapack name="exp_modulator.jsfx" type="effect" desc="MIDI Expression Pedal Curve Modulator + Toe Switch Emulation">
+      <version name="0.1" author="mv11" time="2025-05-05T00:51:13Z">
+        <source main="main">https://raw.githubusercontent.com/mvachhar/mv_reaper_midi/v0.1/MIDI/exp_modulator.jsfx</source>
+      </version>
+    </reapack>
+  </category>
+  <metadata>
+    <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Useful JS MIDI Effects\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 A collection of JS MIDI Effects for Reaper. These have been tested on Reaper v7.36 as of this writing.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Installation\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 The easiest way to use these plugins is to use Reapack.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Install Reapack\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Please follow the installation instructions here to install ReaPack: https://reapack.com/user-guide#installation\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Configure this Repository in ReaPack\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Add the following repository to your reapack: https://raw.githubusercontent.com/mvachhar/mv_reaper_midi/master/index.xml\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Do this by going to the menu and choosing {\f1 Extensions > ReaPack > Import Repository}.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Find and install the plugins you want\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 You can now navigate to {\f1 Extensions > ReaPack > Browse packages} and choose any effects that are included here. A list of effects and plugins is below.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Effects\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 MIDI Experssion Pedal Curve + Toe Switch Emulation ({\f1 exp_modulator.jsfx})\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Plugin that modifes the MIDI CC message to change the rate at which a midi expression pedal changes a control. You can control the input CC number that the plugin will use. If you need to change the output CC, you can use the builtin MIDI plugins to remap the messages/channels/etc. You can set input threshold where the expression pedal generates a non-zero CC message, and the point at which the output is saturated (i.e., maximum value) The curve shape can be made more or less aggressive, with linear as the neutral setting.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 There is also toe switch emulation so that expression pedals without a toe switch can act like they have one. If toe switch emulation is enabled, pressing the pedal all the way to generate a CC value of 127 will trigger toggle the toe switch. It is helpful to set the the saturation to 75-80% so that you can max out the output without accidentally triggering the toeswitch emulation. You can set the output CC message for the toe switch emulation independently of the input CC number.\par}
+}
+]]></description>
+  </metadata>
+</index>

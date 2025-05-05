@@ -5,10 +5,22 @@ These have been tested on Reaper v7.36 as of this writing.
 
 ## Installation
 
-You can install these by doing a git clone in your reaper effects directory (e.g., `/Users/<username>/Library/Application Support/REAPER/Effects/midi/` on Mac, for example).  
-After this, trigger a rescan of the effects by opening the effects selector window, right clicking on the left pane and choosing "Scan for new plugins"
+The easiest way to use these plugins is to use Reapack.
 
-If the `LICENSE` and `README.md` file bother you in the effects list just delete those files since they obviously do not work as effects.
+### Install Reapack
+
+Please follow the installation instructions here to install ReaPack: https://reapack.com/user-guide#installation
+
+### Configure this Repository in ReaPack
+
+Add the following repository to your reapack: https://raw.githubusercontent.com/mvachhar/mv_reaper_midi/master/index.xml
+
+Do this by going to the menu and choosing `Extensions > ReaPack > Import Repository`.
+
+### Find and install the plugins you want
+
+You can now navigate to `Extensions > ReaPack > Browse packages` and choose any effects that are included here.
+A list of effects and plugins is below.
 
 ## Effects
 
