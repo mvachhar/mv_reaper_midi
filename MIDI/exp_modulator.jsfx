@@ -1,7 +1,7 @@
-desc:MIDI Expression Pedal Curve + Toe Switch Emulation
-//tags: utility processing MIDI
-//author: Manish Vachharajani
-//version: 1.0
+desc:MIDI Expression Pedal Curve Modulator + Toe Switch Emulation
+tags: utility processing MIDI
+// author: mv11
+// version: 0.1
 
 in_pin:none
 out_pin:none
